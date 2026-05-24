@@ -1,7 +1,9 @@
-# isomorphic-lib-template Changelog
+# @interop/http-client Changelog
 
-## 1.0.0 - TBD
+## 1.0.0 - 2024-05-24
 
-### Added
+### Changed
 
-- Initial commit.
+- Forked from `digitalbazaar/http-client@4.1.0` (see https://github.com/digitalbazaar/http-client/commits/main/
+  for commit history).
+- **BREAKING**: Upgraded to `undici@7`
