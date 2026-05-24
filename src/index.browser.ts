@@ -3,8 +3,8 @@
  * Copyright (c) 2026 Interop Alliance (Conversion to Typescript).
  */
 
-// Node.js entry point — uses undici-backed agent compatibility.
-import { convertAgent } from './agentCompatibility.js'
+// Browser / React Native entry point — agent options are a no-op.
+import { convertAgent } from './agentCompatibility.browser.js'
 import {
   createInstance,
   kyOriginalPromise,
