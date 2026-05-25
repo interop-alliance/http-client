@@ -1,6 +1,6 @@
 # @interop/http-client Changelog
 
-## 1.0.3 -
+## 1.0.3 - 2024-05-24
 
 ### Changed
 
