@@ -1,5 +1,12 @@
 # @interop/http-client Changelog
 
+## 1.0.3 -
+
+### Changed
+
+- Bumped engine floor to `>=22.12`
+- Added a `default` export (for use via `require()`)
+
 ## 1.0.2 - 2024-05-24
 
 ### Changed
