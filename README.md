@@ -1,6 +1,6 @@
 # HTTP Client _(@interop/http-client)_
 
-[![Node.js CI](https://github.com/interop-alliance/http-client/workflows/Node.js%20CI/badge.svg)](https://github.com/interop-alliance/http-client/actions?query=workflow%3A%22Node.js+CI%22)
+[![Node.js CI](https://github.com/interop-alliance/http-client/workflows/CI/badge.svg)](https://github.com/interop-alliance/http-client/actions?query=workflow%3A%22CI%22)
 [![NPM Version](https://img.shields.io/npm/v/@interop/http-client.svg)](https://npm.im/@interop/http-client)
 
 > An opinionated, isomorphic HTTP client for Node.js, browsers, and React Native.
