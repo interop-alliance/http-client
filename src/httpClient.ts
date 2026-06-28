@@ -47,6 +47,26 @@ export const DEFAULT_HEADERS = {
   Accept: 'application/ld+json, application/json'
 } as const
 
+/**
+ * Whether a response `content-type` denotes JSON that should be auto-parsed into
+ * `response.data` -- `application/json` or any `application/<prefix>+json`
+ * structured-suffix variant (e.g. `application/ld+json`, `application/edv+json`,
+ * `application/problem+json`), each optionally followed by parameters
+ * (`; charset=utf-8`). The `json` token is anchored to the end of the media
+ * type, so a non-JSON type that merely contains the substring `json` --
+ * `application/jsonl` (JSON Lines), `application/json-seq`, `application/json5`
+ * -- is left unparsed (`response.json()` would throw on a JSON-Lines body).
+ *
+ * @param contentType {string | null}
+ * @returns {boolean}
+ */
+function isJsonContentType(contentType: string | null): boolean {
+  return (
+    typeof contentType === 'string' &&
+    /^application\/([^+\s;]+\+)?json\s*(;.*)?$/i.test(contentType)
+  )
+}
+
 // Lazy-loads the ky default instance; deferred so import is skipped until first use.
 export const kyOriginalPromise: Deferred<KyInstance> = deferred(() =>
   import('ky').then(({ default: ky }) => ky)
@@ -131,9 +151,9 @@ function _createHttpClient(
     }
 
     // unknown method — convert agent and call ky directly
-    args[1] = convertAgent(
-      args[1] as Record<string, unknown>
-    ) as HttpClientOptions | undefined
+    args[1] = convertAgent(args[1] as Record<string, unknown>) as
+      | HttpClientOptions
+      | undefined
     return _handleResponse(
       ky[method as keyof KyInstance] as KyMethodFn,
       ky,
@@ -147,15 +167,13 @@ function _createHttpClient(
       method,
       async (...args: [Input, HttpClientOptions?]): Promise<HttpResponse> => {
         const ky = await kyPromise
-        return _handleResponse(
-          ky[method] as KyMethodFn,
-          ky,
-          args,
-          convertAgent
-        )
+        return _handleResponse(ky[method] as KyMethodFn, ky, args, convertAgent)
       }
     ])
-  ) as Record<ProxyMethod, (...args: [Input, HttpClientOptions?]) => Promise<HttpResponse>>
+  ) as Record<
+    ProxyMethod,
+    (...args: [Input, HttpClientOptions?]) => Promise<HttpResponse>
+  >
 
   const client = Object.assign(httpClientFn, methodImpls, {
     create({ headers = {}, ...params }: HttpClientOptions = {}): HttpClient {
@@ -220,7 +238,7 @@ async function _handleResponse(
   if (parseBody) {
     // a 204 will not include a content-type header
     const contentType = response.headers.get('content-type')
-    if (contentType?.includes('json')) {
+    if (isJsonContentType(contentType)) {
       data = await response.json()
     }
   }
@@ -263,7 +281,7 @@ async function _handleError({
   // ky v1 does not auto-populate error.data; read the JSON body explicitly
   if (!err.response.bodyUsed) {
     const contentType = err.response.headers.get('content-type')
-    if (contentType?.includes('json')) {
+    if (isJsonContentType(contentType)) {
       try {
         err.data = await err.response.json()
       } catch {

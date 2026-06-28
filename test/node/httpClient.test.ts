@@ -1,6 +1,10 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import { httpClient, kyPromise, DEFAULT_HEADERS } from '../../src/index.js'
-import { startTestServers, makeHttpsAgent, type TestServers } from '../testServer.js'
+import {
+  startTestServers,
+  makeHttpsAgent,
+  type TestServers
+} from '../testServer.js'
 
 let servers: TestServers
 let httpHost: string
@@ -42,7 +46,7 @@ describe('http-client API', () => {
 
   it('handles a get not found error', async () => {
     const url = `http://${httpHost}/status/404`
-    let err: Error & { response?: Response; requestUrl?: string } | undefined
+    let err: (Error & { response?: Response; requestUrl?: string }) | undefined
     try {
       await httpClient.get(url)
     } catch (caught) {
@@ -57,7 +61,14 @@ describe('http-client API', () => {
 
   it('handles a connection refused error', async () => {
     const url = 'https://localhost:65535'
-    let err: Error & { response?: Response; requestUrl?: string; cause?: { code?: string }; code?: string } | undefined
+    let err:
+      | (Error & {
+          response?: Response
+          requestUrl?: string
+          cause?: { code?: string }
+          code?: string
+        })
+      | undefined
     try {
       await httpClient.get(url, { headers: { Accept: 'text/plain' } })
     } catch (caught) {
@@ -89,7 +100,7 @@ describe('http-client API', () => {
 
   it('handles a TimeoutError', async () => {
     const url = `http://${httpHost}/delay/2`
-    let err: Error & { requestUrl?: string } | undefined
+    let err: (Error & { requestUrl?: string }) | undefined
     try {
       await httpClient.get(url, { timeout: 1000 })
     } catch (caught) {
@@ -134,6 +145,18 @@ describe('http-client API', () => {
     expect(ct!.includes('text/html')).toBe(true)
   })
 
+  it('does not auto-parse a json-substring content-type (application/jsonl)', async () => {
+    // `application/jsonl` contains the substring "json" but is a JSON-Lines body
+    // (several JSON values). It must NOT be auto-parsed into `response.data`
+    // (response.json() would throw); the raw body remains readable via .text().
+    const response = await httpClient.get(`http://${httpHost}/jsonl`)
+    expect(response.status).toBe(200)
+    expect(response.data).toBeUndefined()
+    expect(await response.text()).toBe('{"a":1}\n{"a":2}\n')
+    const ct = response.headers.get('content-type')
+    expect(ct!.includes('application/jsonl')).toBe(true)
+  })
+
   it('handles a direct call (httpClient(url))', async () => {
     const response = await httpClient(`http://${httpHost}/json`)
     expect(response.status).toBe(200)
@@ -142,12 +165,14 @@ describe('http-client API', () => {
 
   it('handles a get not found error with JSON data in error.data', async () => {
     const url = `http://${httpHost}/404`
-    let err: Error & {
-      response?: Response
-      status?: number
-      data?: { code: number; description: string }
-      requestUrl?: string
-    } | undefined
+    let err:
+      | (Error & {
+          response?: Response
+          status?: number
+          data?: { code: number; description: string }
+          requestUrl?: string
+        })
+      | undefined
     try {
       await httpClient.get(url)
     } catch (caught) {
@@ -165,10 +190,12 @@ describe('http-client API', () => {
 
   it('handles a direct call not found error with JSON data', async () => {
     const url = `http://${httpHost}/404`
-    let err: Error & {
-      status?: number
-      data?: { code: number; description: string }
-    } | undefined
+    let err:
+      | (Error & {
+          status?: number
+          data?: { code: number; description: string }
+        })
+      | undefined
     try {
       await httpClient(url)
     } catch (caught) {
