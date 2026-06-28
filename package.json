@@ -1,7 +1,7 @@
 {
   "name": "@interop/http-client",
   "description": "An opinionated, isomorphic HTTP client for Node.js, browsers, and React Native.",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "type": "module",
   "scripts": {
     "build": "pnpm run clear && tsc",
