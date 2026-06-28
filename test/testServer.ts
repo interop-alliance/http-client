@@ -31,7 +31,16 @@ function _createApp(): express.Express {
 
   app.get('/html', cors(), (_req, res) => {
     res.setHeader('Content-Type', 'text/html')
-    res.send('<!DOCTYPE html><html><head></head><body><p>HTML</p></body></html>')
+    res.send(
+      '<!DOCTYPE html><html><head></head><body><p>HTML</p></body></html>'
+    )
+  })
+
+  // JSON Lines: a content-type containing the substring "json" that is NOT a
+  // single JSON value (response.json() would throw on it).
+  app.get('/jsonl', cors(), (_req, res) => {
+    res.setHeader('Content-Type', 'application/jsonl')
+    res.send('{"a":1}\n{"a":2}\n')
   })
 
   // Emulates http://httpbin.org/status/404
@@ -141,8 +150,6 @@ export async function startHttpServer(): Promise<TestHttpServer> {
 }
 
 /** Creates an HTTPS Agent with the given options (for testing self-signed certs). */
-export function makeHttpsAgent(
-  options: https.AgentOptions
-): https.Agent {
+export function makeHttpsAgent(options: https.AgentOptions): https.Agent {
   return new https.Agent(options)
 }
