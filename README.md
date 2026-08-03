@@ -150,7 +150,7 @@ try {
 
 ## Contribute
 
-PRs accepted.
+PRs accepted. See [CONTRIBUTING.md](./CONTRIBUTING.md) for development conventions.
 
 If editing the Readme, please conform to the
 [standard-readme](https://github.com/RichardLitt/standard-readme) specification.
