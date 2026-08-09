@@ -62,6 +62,10 @@ function _createApp(): express.Express {
     res.json({ headers: req.headers })
   })
 
+  app.post('/echo', cors(), express.json(), (req, res) => {
+    res.json({ echo: req.body })
+  })
+
   // Intentionally no CORS headers — used to test browser CORS error handling.
   app.get('/nocors', (_req, res) => {
     res.json({ cors: false })

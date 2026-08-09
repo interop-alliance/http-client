@@ -44,6 +44,21 @@ describe('http-client API', () => {
     expect(response.data).toBeTruthy()
   })
 
+  it('can POST a body over an HTTPS agent', async () => {
+    // exercises the agent path with a request body: on an incompatible
+    // runtime the body and headers must survive being rebuilt as the
+    // installed undici's Request, on a compatible one it rides the
+    // platform dispatcher path
+    const agent = makeHttpsAgent({ rejectUnauthorized: false })
+    const payload = { hello: 'world', n: 42, nested: { ok: true } }
+    const response = await httpClient.post(`https://${httpsHost}/echo`, {
+      agent,
+      json: payload
+    })
+    expect(response.status).toBe(200)
+    expect(response.data).toEqual({ echo: payload })
+  })
+
   it('handles a get not found error', async () => {
     const url = `http://${httpHost}/status/404`
     let err: (Error & { response?: Response; requestUrl?: string }) | undefined

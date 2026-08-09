@@ -1,5 +1,24 @@
 # @interop/http-client Changelog
 
+## 1.0.5 - TBD
+
+### Fixed
+
+- **The `agent`/`httpsAgent` option now works on every supported Node
+  version.** Previously a dispatcher built from the installed `undici@7` was
+  always handed to the platform `fetch`, which only works when the platform
+  undici shares the same major (Node 24); on Node 22 and Node 26 requests
+  failed (e.g. "invalid onError method"). When the majors match, the
+  dispatcher is now forwarded through `ky` to the platform `fetch`; when they
+  differ, requests fall back to the installed undici's own `fetch`. (Ported
+  from upstream `digitalbazaar/http-client`.)
+
+### Changed
+
+- Raised the `ky` floor to `^1.14.3` (needed to forward the `dispatcher`
+  option through to `fetch`).
+- CI now tests on Node 22.12, 24, and 26.
+
 ## 1.0.4 - 2026-06-28
 
 ### Fixed
