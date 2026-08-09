@@ -17,7 +17,7 @@
 
 - Raised the `ky` floor to `^1.14.3` (needed to forward the `dispatcher`
   option through to `fetch`).
-- CI now tests on Node 22.12, 24, and 26.
+- CI now tests on Node 24 and 26.
 
 ## 1.0.4 - 2026-06-28
 

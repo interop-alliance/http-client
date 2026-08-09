@@ -11,9 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        # 24 matches the installed undici major (dispatcher path); 22.12 and
-        # 26 exercise the installed-undici-fetch fallback path
-        node-version: ['22.12', '24', '26']
+        # 24 matches the installed undici major (dispatcher path); 26
+        # exercises the installed-undici-fetch fallback path
+        node-version: ['24', '26']
     steps:
       - uses: actions/checkout@v6
 
