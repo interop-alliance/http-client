@@ -1,6 +1,6 @@
 # @interop/http-client Changelog
 
-## 1.0.6 - TBD
+## 1.0.6 - 2026-11-12
 
 ### Fixed
 
