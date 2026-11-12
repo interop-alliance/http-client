@@ -1,5 +1,12 @@
 # @interop/http-client Changelog
 
+## 1.0.6 - TBD
+
+### Fixed
+
+- A `HEAD` response with a JSON content-type no longer throws "Unexpected end
+  of JSON input". Its body is not parsed, and `response.data` is `undefined`.
+
 ## 1.0.5 - 2026-08-09
 
 ### Fixed

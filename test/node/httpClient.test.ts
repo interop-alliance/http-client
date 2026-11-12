@@ -150,6 +150,21 @@ describe('http-client API', () => {
     expect(ct!.includes('application/json')).toBe(true)
   })
 
+  it('does not parse the body of a HEAD response with a JSON content-type', async () => {
+    const response = await httpClient.head(`http://${httpHost}/json`)
+    expect(response.status).toBe(200)
+    expect(response.data).toBeUndefined()
+    const ct = response.headers.get('content-type')
+    expect(ct!.includes('application/json')).toBe(true)
+
+    // The direct-call form routes through the same handling.
+    const direct = await httpClient(`http://${httpHost}/json`, {
+      method: 'HEAD'
+    })
+    expect(direct.status).toBe(200)
+    expect(direct.data).toBeUndefined()
+  })
+
   it('handles a successful get with HTML data (no response.data)', async () => {
     const response = await httpClient.get(`http://${httpHost}/html`)
     expect(response.status).toBe(200)

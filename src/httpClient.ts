@@ -167,7 +167,13 @@ function _createHttpClient(
       method,
       async (...args: [Input, HttpClientOptions?]): Promise<HttpResponse> => {
         const ky = await kyPromise
-        return _handleResponse(ky[method] as KyMethodFn, ky, args, convertAgent)
+        return _handleResponse(
+          ky[method] as KyMethodFn,
+          ky,
+          args,
+          convertAgent,
+          method
+        )
       }
     ])
   ) as Record<
@@ -207,7 +213,8 @@ async function _handleResponse(
   kyMethod: KyMethodFn,
   kyInstance: KyInstance,
   args: [Input, HttpClientOptions?],
-  convertAgent: ConvertAgentFn
+  convertAgent: ConvertAgentFn,
+  method?: string
 ): Promise<HttpResponse> {
   // convert legacy agent options
   args[1] = convertAgent(args[1] as Record<string, unknown>) as
@@ -235,7 +242,8 @@ async function _handleResponse(
   const { parseBody = true } = args[1] ?? {}
   // always set 'data', default to undefined
   let data: unknown
-  if (parseBody) {
+  // A HEAD response carries the GET's content-type but never a body.
+  if (parseBody && method !== 'head') {
     // a 204 will not include a content-type header
     const contentType = response.headers.get('content-type')
     if (isJsonContentType(contentType)) {
